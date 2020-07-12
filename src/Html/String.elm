@@ -1,6 +1,6 @@
 module Html.String exposing
     ( toHtml, toString
-    , Html, Attribute, text, node, map
+    , Html, Attribute, text, textUnescaped, node, map
     , h1, h2, h3, h4, h5, h6
     , div, p, hr, pre, blockquote
     , span, a, code, em, strong, i, b, u, sub, sup, br
@@ -30,7 +30,7 @@ expect to use frequently will be closer to the top.
 
 # Primitives
 
-@docs Html, Attribute, text, node, map
+@docs Html, Attribute, text, textUnescaped, node, map
 
 
 # Tags
@@ -236,6 +236,17 @@ exactly as you specify.
 text : String -> Html msg
 text =
     TextNode
+
+
+{-| Just put plain text in the DOM. It will NOT escape the string so that you can
+embedd Javascript without converting & to &amp;
+
+    text "if (a && b) {}"
+
+-}
+textUnescaped : String -> Html msg
+textUnescaped =
+    TextNodeUnescaped
 
 
 

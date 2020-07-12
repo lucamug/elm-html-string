@@ -41,6 +41,7 @@ mapChildren f children =
 type Html msg
     = Node String (List (Attribute msg)) (Children msg)
     | TextNode String
+    | TextNodeUnescaped String
 
 
 map : (a -> b) -> Html a -> Html b
@@ -51,6 +52,9 @@ map f node =
 
         TextNode content ->
             TextNode content
+
+        TextNodeUnescaped content ->
+            TextNodeUnescaped content
 
 
 type Attribute msg
@@ -131,6 +135,9 @@ toHtml node =
                     Html.Keyed.node tagName (List.map attributeToHtml attributes) (List.map (Tuple.mapSecond toHtml) keyedNodes)
 
         TextNode content ->
+            Html.text content
+
+        TextNodeUnescaped content ->
             Html.text content
 
 
@@ -272,6 +279,11 @@ toStringHelper indenter tags acc =
             toStringHelper indenter
                 rest
                 { acc | result = indenter acc.depth (escapeHtmlText string) :: acc.result }
+
+        (TextNodeUnescaped string) :: rest ->
+            toStringHelper indenter
+                rest
+                { acc | result = indenter acc.depth string :: acc.result }
 
 
 tag : String -> List (Attribute msg) -> String
